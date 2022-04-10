@@ -1,4 +1,3 @@
-import 'package:chat_app_flutter/auth_handler.dart';
 import 'package:chat_app_flutter/constants/constant_colors.dart';
 import 'package:chat_app_flutter/constants/constants.dart';
 import 'package:chat_app_flutter/constants/utils.dart';
@@ -37,6 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
         profileFromPrefs = profile;
         isLoading = false;
       });
+    }).catchError((onError) {
+      print('onError : ${onError.toString()}');
+      Utils.showToast(message: 'Some error occurred, please restart app or try again later');
     });
   }
 
@@ -83,6 +85,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             } else {
+              if (profileFromPrefs == null) {
+                return Container();
+              }
                 return ListView.separated(
                   padding: EdgeInsets.symmetric(horizontal: Utils.width(context) / 50, vertical: Utils.height(context) / 80,),
                   itemCount: snapshot.data!.docs.length,
@@ -115,6 +120,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                   separatorBuilder: (context, index) {
+                    Profile profile = Profile.fromJson(snapshot.data!.docs.elementAt(index).data() as Map<String, dynamic>);
+                    if (profile.email == profileFromPrefs!.email) {
+                      return Container(
+                        width: 0.0,
+                        height: 0.0,
+                      );
+                    }
                     return SizedBox(
                       height: Utils.height(context) / 80,
                     );

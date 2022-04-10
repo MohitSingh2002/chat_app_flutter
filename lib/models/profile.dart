@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Profile {
   Profile({
     required this.name,
